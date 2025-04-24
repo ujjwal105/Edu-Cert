@@ -5,6 +5,8 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "jsx": "react-jsx", // or "react" if using React < 17
+    "lib": ["dom", "esnext"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

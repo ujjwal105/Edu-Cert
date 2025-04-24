@@ -13,11 +13,10 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
-import Image, { ImageProps } from "next/image";
-import { useOutsideClick } from "@/hooks/use-outside-click";
+import { ImageProps } from "next/image";
 
 interface CarouselProps {
-  items: JSX.Element[];
+  items: React.ReactNode[];
   initialScroll?: number;
 }
 
@@ -159,8 +158,24 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
+  const { onCardClose } = useContext(CarouselContext);
+  function useOutsideClick(
+    ref: React.RefObject<HTMLDivElement | null>,
+    callback: () => void
+  ) {
+    useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+        if (ref.current && !ref.current.contains(event.target as Node)) {
+          callback();
+        }
+      }
 
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref, callback]);
+  }
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
